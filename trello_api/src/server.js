@@ -16,11 +16,10 @@ const START_SERVER = () => {
     console.log(`3. Hello ${env.AUTHOR} DEV, I am running at http://${ env.APP_HOST }:${ env.APP_PORT }/`)
   })
   // Thêm tác vụ clenup trước khi dừng server
-  exitHook(async (callback) => {
+  exitHook( () => {
     console.log('4. Disconnecting...')
-    await CLOSE_DB()
+    CLOSE_DB()
     console.log('5. Disconnected from MongoDB successfully')
-    callback()
     process.exit(0)
   })
 }

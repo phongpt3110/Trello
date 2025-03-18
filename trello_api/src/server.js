@@ -1,14 +1,39 @@
-import express from 'express';
-// const express = require('express')
-const app = express()
+/* eslint-disable no-console */
 
-const hostname = 'localhost'
-const port = "8017"
+import express from 'express'
+import exitHook from 'async-exit-hook'
+import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
+import { env } from '~/config/environment'
 
-app.get('/', function (req, res) {
-  res.send('<h1>Welcome to Trello API</h1>')
-})
+const START_SERVER = () => {
+  const app = express()
 
-app.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`)
-});
+  app.get('/', async (req, res) => {
+    res.end('<h1>Hello World!</h1><hr>')
+  })
+
+  app.listen(env.APP_PORT, env.APP_HOST, () => {
+    console.log(`3. Hello ${env.AUTHOR} DEV, I am running at http://${ env.APP_HOST }:${ env.APP_PORT }/`)
+  })
+  // Thêm tác vụ clenup trước khi dừng server
+  exitHook(async (callback) => {
+    console.log('4. Disconnecting...')
+    await CLOSE_DB()
+    console.log('5. Disconnected from MongoDB successfully')
+    callback()
+    process.exit(0)
+  })
+}
+
+
+(async () => {
+  try {
+    console.log('1. Connecting to MongoDB Alats...')
+    await CONNECT_DB()
+    console.log('2. Connected to MongoDB successfully')
+    START_SERVER()
+  }
+  catch (error) {
+    console.error('Error connecting to MongoDB:', error)
+  }
+})()

@@ -26,6 +26,6 @@ export const GET_DB = () => {
 }
 
 export const CLOSE_DB = async () => {
-  console.log('Đã đóng kết nói')
   await clientConnect.close()
+  console.log('5. Disconnected from MongoDB successfully')
 }

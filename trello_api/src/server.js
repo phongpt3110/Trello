@@ -6,6 +6,8 @@ import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
 import { env } from '~/config/environment'
 import { API_V1 } from '~/routes/v1'
 
+import { errorHandlingMiddleware } from '~/middlewares/errorHandlingMiddleware'
+
 const START_SERVER = () => {
   const app = express()
 
@@ -15,9 +17,13 @@ const START_SERVER = () => {
   // Viết router khi server xử lý
   app.use('/v1', API_V1)
 
+  // Tạo middleware để xử lý lỗi tập trung
+  app.use(errorHandlingMiddleware)
+
   app.listen(env.APP_PORT, env.APP_HOST, () => {
     console.log(`3. Hello ${env.AUTHOR} DEV, I am running at http://${ env.APP_HOST }:${ env.APP_PORT }/`)
   })
+
   // Thêm tác vụ clenup trước khi dừng server
   exitHook( () => {
     console.log('4. Disconnecting...')
@@ -25,7 +31,6 @@ const START_SERVER = () => {
     process.exit(0)
   })
 }
-
 
 (async () => {
   try {

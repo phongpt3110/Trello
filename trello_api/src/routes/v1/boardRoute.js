@@ -11,4 +11,5 @@ Router.route('/')
   })
   .post(boardValidation.createNew, boardController.createNew)
 
+
 export const boardRouter = Router
